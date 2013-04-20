@@ -55,7 +55,7 @@ import gzip
 from tempfile import mkstemp
 from os.path import isdir, exists, dirname, basename, join as pathjoin
 
-from .Core import KnownUnknown
+from .Core import KnownUnknown, TheTileLeftANote
 from . import Memcache
 from . import Redis
 from . import S3
@@ -313,7 +313,15 @@ class Disk:
         if not exists(fullpath):
             return None
 
-        age = time.time() - os.stat(fullpath).st_mtime
+        stat = os.stat(fullpath)
+
+        # TODO this comes from the layer configuration
+        # this is done here rather than in Layer.getTile() so that data doesn't
+        # need to be read from the filesystem if it doesn't have to be
+        if stat.st_size == 334:
+            raise TheTileLeftANote(status_code=404)
+
+        age = time.time() - stat.st_mtime
         
         if layer.cache_lifespan and age > layer.cache_lifespan:
             return None

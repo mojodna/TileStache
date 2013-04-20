@@ -439,6 +439,11 @@ class Layer:
 
                     tile_from = 'layer.render()'
 
+                    # TODO constant / from layer config
+                    if len(body) == 334:
+                        status_code = 404
+                        body = None
+
                 # convert body signalling into a string as necessary
                 if body is None:
                     body = ''
