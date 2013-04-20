@@ -363,8 +363,8 @@ class Layer:
 
         # default response values
         status_code = 200
+        # TODO use a list of tuples instead
         headers = dict()
-        headers['Content-Type'] = mimetype
         body = None
 
         cache = self.config.cache
@@ -438,6 +438,13 @@ class Layer:
                         cache.save(body, self, coord, format)
 
                     tile_from = 'layer.render()'
+
+                # convert body signalling into a string as necessary
+                if body is None:
+                    body = ''
+                else:
+                    # finally, generate a Content-Type header for the tile
+                    headers["Content-Type"] = mimetype
 
             finally:
                 if lockCoord:

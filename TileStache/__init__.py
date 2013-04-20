@@ -263,7 +263,8 @@ def cgiHandler(environ, config='./tilestache.cfg', debug=False):
         headers['Expires'] = expires.strftime('%a %d %b %Y %H:%M:%S GMT')
         headers['Cache-Control'] = 'public, max-age=%d' % layer.max_cache_age
     
-    headers['Content-Length'] = len(content)
+    if content is not None:
+        headers['Content-Length'] = len(content)
 
     # output the status code as a header
     print >> stdout, 'Status: %s', status_code
@@ -362,10 +363,7 @@ class WSGITileServer:
         # TODO headers should be internally represented as a list of tuples
         # rather than a dict, otherwise multiple values for the same header
         # won't work properly
-        if not headers.has_key('Content-Type'):
-            headers['Content-Type'] = 'text/plain'
-
-        if not headers.has_key('Content-Length'):
+        if content != '' and not headers.has_key('Content-Length'):
             headers['Content-Length'] = str(len(content))
         
         # TODO this needs a lookup for the string part of the response
