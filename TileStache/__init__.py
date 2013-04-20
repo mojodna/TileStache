@@ -343,6 +343,7 @@ class WSGITileServer:
             start_response('302 Found', [('Location', other_uri), ('Content-Type', 'text/plain')])
             return ['You are being redirected to %s\n' % other_uri]
         
+        # TODO these headers should be set in getTile
         request_layer = requestLayer(self.config, environ['PATH_INFO'])
         allowed_origin = request_layer.allowed_origin
         max_cache_age = request_layer.max_cache_age
